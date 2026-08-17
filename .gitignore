@@ -1,0 +1,28 @@
+# Challenge data (large / provided separately, do not redistribute)
+challenge_data/
+Data_T0/
+Data_T1/
+Development_Labels/
+Submission_Template.csv
+
+# Secrets / credentials
+.env
+*.key
+*_key*.json
+service-account*.json
+gcp-*.json
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
