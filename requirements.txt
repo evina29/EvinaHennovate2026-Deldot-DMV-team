@@ -1,0 +1,11 @@
+# Core pipeline
+numpy>=1.26
+scikit-learn>=1.4
+scipy>=1.11
+
+# Demo app
+streamlit>=1.40
+
+# Gemini explanations (optional at runtime; app falls back to a built-in
+# template if no GEMINI_API_KEY is set)
+google-genai>=1.0

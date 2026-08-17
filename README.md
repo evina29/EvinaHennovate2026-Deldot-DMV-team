@@ -159,9 +159,30 @@ Brier scores (lower = better calibrated; 0.25 ≈ coin-flip):
 insufficient_evidence 0.228, review_not_warranted 0.194,
 review_warranted 0.181.
 
+### Is the improvement statistically real?
+
+The single 75-case split above is underpowered: on it, McNemar's paired
+test against a majority-class baseline is **not** significant (p ≈ 0.31).
+The honest, better-powered evidence is 5-fold cross-validation over all
+300 labels (`significance_test.py`):
+
+```
+Model (RandomForest):     50.0% (+/- 3.5%)
+Majority-class baseline:  35.0%
+Paired t-test across folds: p ≈ 0.001
+```
+
+So the ~15-point improvement over baseline is real and consistent under
+cross-validation, even though any single small hold-out estimate is noisy.
+This is triage that meaningfully beats chance — not an accurate classifier.
+A model search (`experiment_model.py`) confirms the ~50% ceiling is set by
+the features and the 300 labels, not the choice of classifier (RF,
+ExtraTrees, boosting, and balanced LogReg all land within ±0.5%).
+
 T0 → T1: 34.5% of the 12,000 candidates changed predicted class after
-incorporating T1 evidence, indicating the system is meaningfully
-responsive to new evidence rather than static.
+incorporating T1 evidence, indicating the system is responsive to new
+evidence rather than static (though on borderline cases this also reflects
+prediction instability).
 
 ## Known limitations / next steps
 

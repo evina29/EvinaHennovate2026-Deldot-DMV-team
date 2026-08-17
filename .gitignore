@@ -5,6 +5,11 @@ Data_T1/
 Development_Labels/
 Submission_Template.csv
 
+# Derived demo data (regenerate with: python export_case_data.py)
+# Kept out of the repo because it contains challenge-derived evidence trails
+# and is large (~30 MB).
+demo_data/
+
 # Secrets / credentials
 .env
 *.key
