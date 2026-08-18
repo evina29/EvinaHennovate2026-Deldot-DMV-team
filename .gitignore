@@ -10,6 +10,12 @@ Submission_Template.csv
 # and is large (~30 MB).
 demo_data/
 
+# Self-contained HTML demo (regenerate with: python export_html.py).
+# Embeds challenge-derived evidence for the curated + worklist cases, so it's
+# kept out of the repo for the same reason as demo_data/. The generator
+# (export_html.py + html_template.html) IS tracked, so it can be rebuilt.
+dmv_demo.html
+
 # Secrets / credentials
 .env
 *.key

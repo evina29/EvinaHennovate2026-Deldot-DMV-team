@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSTR · Out-of-State Tag Review — Delaware DMV</title>
+<style>
+  :root{
+    /* neutral structure */
+    --g0:#ffffff; --g1:#f6f7f8; --g2:#eceef1; --g3:#e2e5e9; --g4:#d3d8dd;
+    --g5:#9aa2ac; --g6:#6b7480; --g7:#48505a; --g8:#2b3138; --g9:#171b20;
+    /* single structural accent (navy), used only for active nav / links / focus */
+    --accent:#1f4d6b; --accent-weak:#eef3f6;
+    /* semantic — reserved strictly for the three review classes + verdicts */
+    --rw-fg:#b42318; --rw-bg:#fef3f2; --rw-bd:#f7ccc6;
+    --rn-fg:#12683f; --rn-bg:#eefaf2; --rn-bd:#bfe6cf;
+    --ie-fg:#b25409; --ie-bg:#fdf6ec; --ie-bd:#f2ddb8;
+    --sans:"Inter","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"SFMono-Regular","Cascadia Mono",ui-monospace,"Roboto Mono",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:var(--sans);font-size:13px;line-height:1.45;color:var(--g8);
+       background:var(--g1);-webkit-font-smoothing:antialiased;}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.1px}
+  a{color:var(--accent);text-decoration:none}
+  ::selection{background:#d7e6ef}
+
+  /* ---------- app shell ---------- */
+  .app{display:grid;grid-template-columns:232px 1fr;height:100vh}
+  .sidebar{background:var(--g9);color:#cdd3da;display:flex;flex-direction:column;
+           border-right:1px solid #000}
+  .brand{display:flex;align-items:center;gap:9px;padding:14px 16px;border-bottom:1px solid #000a}
+  .brand .mark{color:#e8edf2}
+  .brand .bt{font-weight:600;font-size:12.5px;color:#f2f5f8;letter-spacing:.2px;line-height:1.15}
+  .brand .bs{font-size:10.5px;color:#7c8794;letter-spacing:.3px;text-transform:uppercase}
+  nav{padding:8px 8px 4px;overflow-y:auto;flex:1}
+  .nav-sec{font-size:10px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;
+           color:#6a747f;padding:14px 8px 6px}
+  .nav-item{display:flex;align-items:center;gap:9px;width:100%;padding:7px 8px;margin:1px 0;
+            background:transparent;border:0;border-radius:4px;color:#c2c9d1;font:inherit;
+            font-size:12.5px;cursor:pointer;text-align:left}
+  .nav-item:hover{background:#20262d;color:#eef1f4}
+  .nav-item.on{background:#212933;color:#fff;box-shadow:inset 2px 0 0 var(--accent)}
+  .nav-item .ic{color:#8c96a1}
+  .nav-item.on .ic{color:#7db4d4}
+  .nav-item .badge-n{margin-left:auto;font-family:var(--mono);font-size:11px;color:#9aa4af;
+            background:#2b333d;border-radius:3px;padding:0 6px;line-height:17px}
+  .pin{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;margin:1px 0;
+       background:transparent;border:0;border-radius:4px;color:#b7bfc8;font:inherit;
+       cursor:pointer;text-align:left}
+  .pin:hover{background:#20262d}
+  .pin.on{background:#212933}
+  .pin .pl{font-size:12px;color:#d6dbe1;line-height:1.2}
+  .pin .pid{font-family:var(--mono);font-size:10.5px;color:#7c8794}
+  .pin .pin-note{margin-left:auto;font-size:10px;color:#7c8794;font-style:italic;align-self:center}
+  .side-foot{padding:10px 14px;border-top:1px solid #000a;font-size:10.5px;color:#69737e;
+             font-family:var(--mono)}
+
+  .content{display:flex;flex-direction:column;min-width:0;height:100vh}
+  .topbar{display:flex;align-items:center;gap:16px;padding:0 18px;height:48px;
+          background:var(--g0);border-bottom:1px solid var(--g3);flex:none}
+  .crumb{font-size:12px;color:var(--g6)}
+  .crumb b{color:var(--g9);font-weight:600}
+  .crumb .mono{color:var(--g7)}
+  .top-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .search{display:flex;align-items:center;gap:7px;background:var(--g1);border:1px solid var(--g3);
+          border-radius:5px;padding:5px 9px;width:230px}
+  .search:focus-within{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-weak)}
+  .search .ic{color:var(--g5)}
+  .search input{border:0;background:transparent;outline:0;font:inherit;font-size:12.5px;width:100%;color:var(--g8)}
+  .search input::placeholder{color:var(--g5)}
+  .seg{display:flex;align-items:center;gap:7px}
+  .seg .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--g5)}
+  .seg .grp{display:flex;border:1px solid var(--g3);border-radius:5px;overflow:hidden}
+  .seg button{border:0;background:var(--g0);padding:5px 12px;font:inherit;font-size:12px;
+              color:var(--g6);cursor:pointer;font-family:var(--mono)}
+  .seg button+button{border-left:1px solid var(--g3)}
+  .seg button.on{background:var(--g8);color:#fff}
+  .userchip{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--g7);padding-left:4px;border-left:1px solid var(--g3)}
+  .userchip .av{width:22px;height:22px;border-radius:50%;background:var(--g3);color:var(--g7);
+                display:grid;place-items:center;font-size:10px;font-weight:700}
+  .env{font-size:9.5px;font-weight:700;letter-spacing:.6px;color:#8a6d1f;background:#fbf3d9;
+       border:1px solid #ecd79a;border-radius:3px;padding:2px 6px}
+
+  main{overflow-y:auto;padding:18px 20px;flex:1}
+  .panel{max-width:1180px}
+  .panel.hidden{display:none}
+
+  .page-h{display:flex;align-items:baseline;gap:12px;margin:2px 0 14px}
+  .page-h h1{font-size:15px;font-weight:600;color:var(--g9);margin:0;letter-spacing:-.1px}
+  .page-h .sub{font-size:12px;color:var(--g6)}
+  .divider{height:1px;background:var(--g3);margin:14px 0}
+
+  /* ---------- surfaces ---------- */
+  .surface{background:var(--g0);border:1px solid var(--g3);border-radius:6px}
+  .surface .s-h{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--g2)}
+  .s-title{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--g6)}
+  .s-body{padding:14px}
+
+  /* ---------- data table ---------- */
+  table.grid{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.grid thead th{text-align:left;font-weight:600;font-size:10.5px;letter-spacing:.5px;
+        text-transform:uppercase;color:var(--g6);padding:8px 12px;border-bottom:1px solid var(--g3);
+        background:var(--g1);white-space:nowrap;user-select:none}
+  table.grid th.sortable{cursor:pointer}
+  table.grid th.sortable:hover{color:var(--g8)}
+  table.grid th .car{color:var(--accent);font-size:9px;margin-left:4px}
+  table.grid th.num,table.grid td.num{text-align:right}
+  table.grid tbody td{padding:9px 12px;border-bottom:1px solid var(--g2);color:var(--g8);vertical-align:middle}
+  table.grid tbody tr{cursor:pointer}
+  table.grid tbody tr:hover{background:var(--g1)}
+  table.grid tbody tr:hover .rowcar{color:var(--g7)}
+  .rank{color:var(--g5);font-family:var(--mono);font-size:11px}
+  .cidcell{font-family:var(--mono);font-weight:500;color:var(--g9)}
+  .rowcar{color:var(--g4);text-align:right}
+  .statecode{font-family:var(--mono);font-weight:600;color:var(--g8);background:var(--g2);
+             border:1px solid var(--g3);border-radius:3px;padding:1px 6px;font-size:11.5px}
+  .measure{font-family:var(--mono);color:var(--g8)}
+  .measure.zero{color:var(--g5)}
+  td.pri{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;
+         color:var(--g9);font-size:13px}
+
+  /* ---------- class pill ---------- */
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
+        padding:2px 8px;border-radius:4px;border:1px solid;white-space:nowrap;letter-spacing:.1px}
+  .pill.lg{font-size:12px;padding:4px 10px}
+  .pdot{width:6px;height:6px;border-radius:2px;flex:none}
+
+  /* ---------- key/value meta ---------- */
+  .meta{display:grid;grid-template-columns:repeat(6,1fr);gap:0;border:1px solid var(--g3);
+        border-radius:6px;overflow:hidden;background:var(--g0)}
+  .meta>div{padding:10px 14px;border-right:1px solid var(--g2)}
+  .meta>div:last-child{border-right:0}
+  .meta dt{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--g5);margin:0 0 4px}
+  .meta dd{margin:0;font-size:13.5px;color:var(--g9)}
+
+  .cols2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;margin-top:16px}
+  @media(max-width:900px){.cols2{grid-template-columns:1fr}.meta{grid-template-columns:repeat(3,1fr)}}
+
+  /* ---------- probabilities ---------- */
+  .prob{display:grid;grid-template-columns:130px 1fr 42px;align-items:center;gap:10px;padding:5px 0}
+  .prob .pl{font-size:12px;color:var(--g7)}
+  .prob.top .pl{color:var(--g9);font-weight:600}
+  .prob .track{height:6px;background:var(--g2);border-radius:3px;overflow:hidden}
+  .prob .fill{height:100%;border-radius:3px;opacity:.9}
+  .prob .pv{font-family:var(--mono);font-size:12px;text-align:right;color:var(--g8)}
+  .caption{font-size:11.5px;color:var(--g6);margin-top:8px}
+
+  /* ---------- audit log timeline ---------- */
+  .audit{list-style:none;margin:0;padding:0}
+  .audit li{display:grid;grid-template-columns:82px 16px 1fr auto;align-items:start;gap:10px;
+            padding:9px 0;border-bottom:1px solid var(--g2)}
+  .audit li:last-child{border-bottom:0}
+  .audit .t{font-family:var(--mono);font-size:11.5px;color:var(--g6);text-align:right;padding-top:1px}
+  .audit .node{position:relative;display:flex;justify-content:center;padding-top:3px}
+  .audit .node::before{content:"";position:absolute;top:10px;bottom:-16px;width:1px;background:var(--g3)}
+  .audit li:last-child .node::before{display:none}
+  .audit .sq{width:8px;height:8px;border-radius:2px;z-index:1;border:1px solid #fff}
+  .audit .src{font-weight:600;color:var(--g8);font-size:12.5px}
+  .audit .sub{margin-top:2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .verdict{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+  .audit .w{font-family:var(--mono);font-size:11px;color:var(--g5);text-align:right;padding-top:2px}
+
+  /* ---------- reviewer note (AI annotation) ---------- */
+  .note{border:1px solid var(--g3);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;
+        background:#fbfbf9}
+  .note .nh{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--g2)}
+  .note .ntag{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--accent)}
+  .note .nsrc{margin-left:auto;font-size:10.5px;color:var(--g6);font-family:var(--mono)}
+  .note .nb{padding:12px 14px;font-size:13.5px;line-height:1.6;color:var(--g8)}
+  .note .nf{padding:0 14px 12px;font-size:11px;color:var(--g6);font-style:italic}
+
+  .btn{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:12.5px;font-weight:500;
+       color:var(--g8);background:var(--g0);border:1px solid var(--g4);border-radius:5px;
+       padding:6px 12px;cursor:pointer}
+  .btn:hover{background:var(--g1);border-color:var(--g5)}
+  .btn .ic{color:var(--g6)}
+  .btn.hidden{display:none}
+
+  /* ---------- comparison ---------- */
+  .transition{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--g7)}
+  .cmpgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+  @media(max-width:900px){.cmpgrid{grid-template-columns:1fr}}
+  .delta{width:100%;border-collapse:collapse;font-size:12.5px}
+  .delta td,.delta th{padding:8px 12px;border-bottom:1px solid var(--g2);text-align:left}
+  .delta th{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--g6);font-weight:600}
+  .arrow{color:var(--g5);padding:0 6px}
+
+  /* ---------- metrics / confusion ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--g3);
+         border-radius:6px;overflow:hidden}
+  .stats>div{padding:12px 16px;border-right:1px solid var(--g2)}
+  .stats>div:last-child{border-right:0}
+  .stats .l{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--g5)}
+  .stats .v{font-family:var(--mono);font-size:24px;color:var(--g9);margin-top:3px}
+  .stats .d{font-size:11px;color:var(--rn-fg);font-family:var(--mono);margin-top:2px}
+  table.cm{border-collapse:collapse;font-size:12.5px;margin-top:6px}
+  table.cm th{padding:7px 10px;color:var(--g6);font-weight:600;font-size:11px}
+  table.cm th.col{text-align:center;border-bottom:1px solid var(--g3)}
+  table.cm th.row{text-align:right;color:var(--g7)}
+  table.cm td{padding:12px 20px;text-align:center;font-family:var(--mono);border:1px solid var(--g0)}
+  table.cm td .n{font-size:14px}
+  .callout{border:1px solid var(--g3);border-left:3px solid var(--ie-fg);background:var(--ie-bg);
+           border-radius:0 6px 6px 0;padding:11px 14px;font-size:12.5px;color:var(--g8);margin-top:14px;line-height:1.55}
+  .foot-meta{font-size:11px;color:var(--g6);margin-top:10px;font-family:var(--mono)}
+  .ic{width:16px;height:16px;stroke:currentColor;stroke-width:1.75;fill:none;
+      stroke-linecap:round;stroke-linejoin:round;flex:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <svg class="ic mark" width="20" height="20" viewBox="0 0 24 24"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+      <div><div class="bt">Delaware DMV</div><div class="bs">Tag Review · OSTR</div></div>
+    </div>
+    <nav>
+      <div class="nav-sec">Case management</div>
+      <button class="nav-item on" data-t="work">
+        <svg class="ic" viewBox="0 0 24 24"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+        Worklist <span class="badge-n" id="wl-count"></span></button>
+      <button class="nav-item" data-t="case">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
+        Case detail</button>
+      <button class="nav-item" data-t="evo">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
+        Evidence comparison</button>
+      <div class="nav-sec">Analytics</div>
+      <button class="nav-item" data-t="honest">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+        Model performance</button>
+      <div class="nav-sec">Pinned cases</div>
+      <div id="picks"></div>
+    </nav>
+    <div class="side-foot">env: DEMO · v1.0 · read-only</div>
+  </aside>
+
+  <!-- ============ CONTENT ============ -->
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb" id="crumb"></div>
+      <div class="top-actions">
+        <div class="search">
+          <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="search" placeholder="Search case ID (CAN-…)" spellcheck="false">
+        </div>
+        <div class="seg"><span class="lbl">Snapshot</span>
+          <div class="grp" id="phase"><button data-p="T0">T0</button><button data-p="T1" class="on">T1</button></div>
+        </div>
+        <span class="env">DEV / DEMO</span>
+        <div class="userchip"><span class="av">JR</span>j.reviewer</div>
+      </div>
+    </header>
+    <main>
+      <div id="panel-work" class="panel"></div>
+      <div id="panel-case" class="panel hidden"></div>
+      <div id="panel-evo" class="panel hidden"></div>
+      <div id="panel-honest" class="panel hidden"></div>
+    </main>
+  </div>
+</div>
+
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const CLASSES = ["review_warranted","review_not_warranted","insufficient_evidence"];
+const SEM = {
+  review_warranted:{fg:"var(--rw-fg)",bg:"var(--rw-bg)",bd:"var(--rw-bd)",short:"Warranted",full:"Review warranted"},
+  review_not_warranted:{fg:"var(--rn-fg)",bg:"var(--rn-bg)",bd:"var(--rn-bd)",short:"Not warranted",full:"Review not warranted"},
+  insufficient_evidence:{fg:"var(--ie-fg)",bg:"var(--ie-bg)",bd:"var(--ie-bd)",short:"Insufficient",full:"Insufficient evidence"},
+};
+const SRC = {address:"Address history",license:"License / credential",work:"Work location",vehicle:"Vehicle title event",external:"External signal"};
+const ORDER = ["address","license","work","vehicle","external"];
+const state = {cid: DATA.flip, phase:"T1", tab:"work", sort:{key:"priority",dir:"desc"}};
+const esc = s => String(s==null?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const tagOf = (cid,ph)=>DATA.cases[cid][ph].home_state||DATA.cases[cid].observed_state||"—";
+
+function pill(cls,lg){const s=SEM[cls];
+  return `<span class="pill ${lg?'lg':''}" style="color:${s.fg};background:${s.bg};border-color:${s.bd}">
+    <span class="pdot" style="background:${s.fg}"></span>${lg?s.full:s.short}</span>`;}
+
+function probBlock(probs,pred){
+  return `<div>${CLASSES.map(c=>{
+    const p=probs[c]||0,s=SEM[c];
+    return `<div class="prob ${c===pred?'top':''}"><span class="pl">${s.full}</span>
+      <span class="track"><span class="fill" style="width:${(p*100).toFixed(0)}%;background:${s.fg}"></span></span>
+      <span class="pv">${(p*100).toFixed(0)}%</span></div>`;}).join("")}</div>`;
+}
+
+function verdict(info,tag){
+  if(info.state===tag) return {c:"var(--rn-fg)",t:`Match · ${tag}`};
+  if(info.is_de) return {c:"var(--ie-fg)",t:"Delaware signal"};
+  return {c:"var(--rw-fg)",t:`Differs from ${tag}`};
+}
+function auditLog(ph,tag){
+  const ps=ph.per_source||{};
+  let present=ORDER.filter(s=>ps[s]&&ps[s].present).map(s=>[s,ps[s]]);
+  if(!present.length) return `<p class="caption">No external records linked to this candidate.</p>`;
+  present.sort((a,b)=>(a[1].date||"").localeCompare(b[1].date||""));
+  return `<ol class="audit">${present.map(([s,i])=>{
+    const v=verdict(i,tag);
+    return `<li>
+      <span class="t">${esc(i.date||"—")}</span>
+      <span class="node"><span class="sq" style="background:${v.c}"></span></span>
+      <span><span class="src">${SRC[s]}</span>
+        <span class="sub"><span class="statecode">${esc(i.state||"?")}</span>
+        <span class="verdict" style="color:${v.c}">${v.t}</span></span></span>
+      <span class="w">w ${(i.weight||0).toFixed(2)}</span></li>`;}).join("")}</ol>`;
+}
+
+/* ---------------- Worklist ---------------- */
+function sortRows(rows){
+  const {key,dir}=state.sort, m=dir==="asc"?1:-1;
+  return rows.slice().sort((a,b)=>{
+    let x=a[key],y=b[key];
+    if(typeof x==="string") return x.localeCompare(y)*m;
+    return (x-y)*m;});
+}
+function renderWork(){
+  const cols=[["priority","Priority",1,1],["cid","Case ID",0,1],["tag","Tag",0,1],
+              ["differ","Conflicts",1,1],["de_signals","DE signals",1,1],["n_sources","Sources",1,1]];
+  const rows=sortRows(DATA.worklist);
+  // subtle monochrome tint scaled to priority over the real score domain (~0.28–0.73)
+  const tint=p=>Math.max(0,Math.min(1,(p-0.28)/0.45))*0.11;
+  const head=cols.map(([k,lbl,num,sortable])=>{
+    const on=state.sort.key===k;
+    const car=on?`<span class="car">${state.sort.dir==="asc"?"▲":"▼"}</span>`:"";
+    return `<th class="${num?'num':''} ${sortable?'sortable':''}" ${sortable?`data-k="${k}"`:""}>${lbl}${car}</th>`;
+  }).join("")+"<th></th>";
+  const body=rows.map((r,i)=>`
+    <tr data-cid="${r.cid}">
+      <td class="num pri" style="background:rgba(23,27,32,${tint(r.priority).toFixed(3)})">${r.priority.toFixed(3)}</td>
+      <td class="cidcell">${r.cid}</td>
+      <td><span class="statecode">${r.tag}</span></td>
+      <td class="num measure ${r.differ?'':'zero'}">${r.differ}</td>
+      <td class="num measure ${r.de_signals?'':'zero'}">${r.de_signals}</td>
+      <td class="num measure">${r.n_sources}</td>
+      <td class="rowcar">›</td>
+    </tr>`).join("");
+  document.getElementById("panel-work").innerHTML=`
+    <div class="page-h"><h1>Review worklist</h1>
+      <span class="sub">Cases classified <b>review warranted</b> at snapshot ${state.phase==="T1"?"T1":"T0"}, ranked by priority. Select a row to open the case file.</span></div>
+    <div class="surface"><table class="grid">
+      <thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+    <p class="caption">${rows.length} open items · a reviewer works top-down and can stop when time runs out, having cleared the highest-priority cases first.</p>`;
+}
+
+/* ---------------- Case detail ---------------- */
+function renderCase(){
+  const c=DATA.cases[state.cid], el=document.getElementById("panel-case");
+  if(!c){el.innerHTML=`<div class="page-h"><h1>Case not found</h1></div>`;return;}
+  const ph=c[state.phase], tag=tagOf(state.cid,state.phase), pred=ph.predicted_class, probs=ph.probabilities;
+  const meta=DATA.curated.find(x=>x.cid===state.cid);
+  const ex=c.expl[state.phase];
+  el.innerHTML=`
+    <div class="page-h"><h1 class="mono" style="font-size:15px">${state.cid}</h1>
+      ${pill(pred,true)} <span class="sub">${meta?esc(meta.scenario):"case file"} · snapshot ${state.phase}</span></div>
+    <dl class="meta">
+      <div><dt>Case ID</dt><dd class="mono">${state.cid}</dd></div>
+      <div><dt>Tag state</dt><dd class="mono">${tag}</dd></div>
+      <div><dt>Classification</dt><dd>${pill(pred)}</dd></div>
+      <div><dt>Review priority</dt><dd class="mono">${ph.review_priority.toFixed(2)}</dd></div>
+      <div><dt>Linked sources</dt><dd class="mono">${ph.n_sources||0}</dd></div>
+      <div><dt>Snapshot</dt><dd class="mono">${state.phase}</dd></div>
+    </dl>
+    <div class="cols2">
+      <div class="surface"><div class="s-h"><span class="s-title">Calibrated probabilities</span></div>
+        <div class="s-body">${probBlock(probs,pred)}
+          <p class="caption">Platt-calibrated; readable as confidences, not raw votes.</p></div></div>
+      <div class="surface"><div class="s-h"><span class="s-title">Evidence audit trail</span>
+          <span class="caption" style="margin:0 0 0 auto">most recent record per source vs. ${tag} tag</span></div>
+        <div class="s-body">${auditLog(ph,tag)}</div></div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span class="s-title">Reviewer note</span>
+      <button class="btn" id="genbtn">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 3v3"/><path d="M12 18v3"/><path d="m5 5 2 2"/><path d="m17 17 2 2"/><circle cx="12" cy="12" r="4"/></svg>
+        Generate note</button>
+    </div>
+    <div id="note" class="hidden"><section class="note">
+      <div class="nh"><span class="ntag">Reviewer note</span>
+        <span class="nsrc">${ex.source==="gemini"?"AI-generated · gemini-2.5-flash":"rule-based evidence summary"}</span></div>
+      <p class="nb">${esc(ex.text)}</p>
+      <div class="nf">Summarizes the linked evidence, not the model's internal reasoning. Decision-support only — not a legal, residency, or enforcement determination.</div>
+    </section></div>`;
+  const btn=document.getElementById("genbtn");
+  if(btn) btn.onclick=()=>{document.getElementById("note").classList.remove("hidden");btn.classList.add("hidden");};
+}
+
+/* ---------------- Evidence comparison ---------------- */
+function renderEvo(){
+  const c=DATA.cases[state.cid], el=document.getElementById("panel-evo");
+  if(!c){el.innerHTML=`<div class="page-h"><h1>Case not found</h1></div>`;return;}
+  const t0=c.T0,t1=c.T1,tag=tagOf(state.cid,"T1");
+  const changed=t0.predicted_class!==t1.predicted_class;
+  const notFlip=state.cid!==DATA.flip;
+  const side=(name,p)=>`<div class="surface">
+    <div class="s-h"><span class="s-title">${name}</span><span style="margin-left:auto">${pill(p.predicted_class)}</span></div>
+    <div class="s-body">
+      <div class="prob" style="grid-template-columns:130px auto;margin-bottom:6px">
+        <span class="pl">Review priority</span><span class="pv mono" style="font-size:13px">${p.review_priority.toFixed(2)}</span></div>
+      ${probBlock(p.probabilities,p.predicted_class)}
+      <div class="divider" style="margin:12px 0"></div>${auditLog(p,tag)}</div></div>`;
+  const diffs=ORDER.filter(s=>{const a=t0.per_source[s]||{},b=t1.per_source[s]||{};return b.present&&a.state!==b.state;})
+    .map(s=>{const a=t0.per_source[s]||{},b=t1.per_source[s]||{};
+      return `<tr><td>${SRC[s]}</td>
+        <td><span class="statecode">${a.present?a.state:"—"}</span><span class="arrow">→</span><span class="statecode">${b.state}</span></td></tr>`;});
+  el.innerHTML=`
+    <div class="page-h"><h1 class="mono" style="font-size:15px">${state.cid}</h1>
+      <span class="sub">evidence snapshot comparison</span></div>
+    ${notFlip?`<div class="callout" style="border-left-color:var(--accent);background:var(--accent-weak)">
+        The clearest before/after is the flagged flip case.
+        <a href="#" id="loadflip">Load ${DATA.flip} →</a></div>`:""}
+    <div class="surface" style="margin-top:${notFlip?'14px':'0'}"><div class="s-body transition">
+      ${changed?`New T1 evidence moves this case from ${pill(t0.predicted_class)} <span class="arrow">→</span> ${pill(t1.predicted_class)}`
+               :`Classification is unchanged across snapshots: ${pill(t1.predicted_class)}`}</div></div>
+    <div class="cmpgrid">${side("T0 · initial evidence",t0)}${side("T1 · after new evidence",t1)}</div>
+    ${diffs.length?`<div class="surface" style="margin-top:16px"><div class="s-h"><span class="s-title">Source changes T0 → T1</span></div>
+      <table class="delta"><thead><tr><th>Source</th><th>State (T0 → T1)</th></tr></thead><tbody>${diffs.join("")}</tbody></table></div>`:""}`;
+  const lf=document.getElementById("loadflip");
+  if(lf) lf.onclick=e=>{e.preventDefault();openCase(DATA.flip,true);};
+}
+
+/* ---------------- Model performance ---------------- */
+function renderHonest(){
+  const m=DATA.metrics[state.phase==="T1"?"label_t1":"label_t0"]||DATA.metrics.label_t0;
+  const short={review_warranted:"Warranted",review_not_warranted:"Not warranted",insufficient_evidence:"Insufficient"};
+  const cm=m.confusion_matrix,cl=m.classes;
+  const acc=m.accuracy,base=m.baseline_majority_accuracy,ch=m.chance_accuracy;
+  const head=`<tr><th></th>${cl.map(c=>`<th class="col">${short[c]}</th>`).join("")}<th class="col">Recall</th></tr>`;
+  const body=cl.map((ct,i)=>{
+    const row=cm[i],tot=row.reduce((a,b)=>a+b,0)||1;
+    const cells=row.map((v,j)=>{
+      const ok=i===j, f=v/tot;
+      const bg=ok?`rgba(18,104,63,${(0.10+0.42*f).toFixed(2)})`:`rgba(23,27,32,${(0.03+0.16*f).toFixed(2)})`;
+      return `<td style="background:${bg};color:${ok?'var(--rn-fg)':'var(--g8)'};font-weight:${ok?700:400}"><span class="n">${v}</span></td>`;
+    }).join("");
+    return `<tr><th class="row">${short[ct]}</th>${cells}<td style="color:var(--g6)">${Math.round(row[i]/tot*100)}%</td></tr>`;
+  }).join("");
+  // triage effectiveness (the usefulness proof)
+  const tr=m.triage||{};
+  const at=(tr.precision_at_k||{})["75"]||(tr.precision_at_k||{})["50"]||{precision:0,lift:0,hits:0};
+  const kUsed=(tr.precision_at_k||{})["75"]?75:50;
+  const effort=Math.round((tr.effort_saved_at_75||0)*100);
+  const baseRate=tr.base_rate||0;
+  document.getElementById("panel-honest").innerHTML=`
+    <div class="page-h"><h1>Model performance</h1>
+      <span class="sub">out-of-fold 5-fold cross-validation over all ${m.n} labeled cases (${m.label_col})</span></div>
+
+    <div class="surface"><div class="s-h"><span class="s-title">Triage effectiveness — the number that matters</span>
+        <span class="caption" style="margin:0 0 0 auto">does the ranking put real cases at the top?</span></div>
+      <div class="s-body" style="display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:center">
+        <div>
+          <div class="stats" style="border:0">
+            <div style="padding-left:0"><div class="l">Triage lift @ top ${kUsed}</div><div class="v">${at.lift.toFixed(1)}×</div><div class="d">${Math.round(at.precision*100)}% are true cases vs ${Math.round(baseRate*100)}% at random</div></div>
+            <div><div class="l">Review effort saved</div><div class="v">${effort}%</div><div class="d">fewer files opened to catch the same cases</div></div>
+            <div style="border-right:0"><div class="l">Base rate</div><div class="v">${Math.round(baseRate*100)}%</div><div class="d" style="color:var(--g6)">share needing review</div></div>
+          </div>
+          <p class="caption" style="margin-top:12px">Ranked by the model's out-of-fold confidence — exactly how the worklist orders cases. A reviewer working top-down reaches confirmed out-of-state cases roughly <b>${at.lift.toFixed(1)}× faster</b> than working the queue in arbitrary order.</p>
+        </div>
+        <div>${gainsCurve(tr)}</div>
+      </div></div>
+
+    <div class="stats" style="margin-top:16px">
+      <div><div class="l">3-class CV accuracy</div><div class="v">${Math.round(acc*100)}%</div><div class="d">+${Math.round((acc-base)*100)} pts vs baseline</div></div>
+      <div><div class="l">Majority baseline</div><div class="v">${Math.round(base*100)}%</div></div>
+      <div><div class="l">Random chance</div><div class="v">${Math.round(ch*100)}%</div></div>
+      <div><div class="l">Labeled cases</div><div class="v">${m.n}</div></div>
+    </div>
+    <div class="surface" style="margin-top:16px"><div class="s-h"><span class="s-title">Confusion matrix</span>
+        <span class="caption" style="margin:0 0 0 auto">rows = true label · columns = predicted · diagonal = correct</span></div>
+      <div class="s-body"><table class="cm">${head}${body}</table></div></div>
+    <div class="callout">Raw 3-class accuracy is ~50% and the model is weak on <b>insufficient evidence</b> — but accuracy is the wrong yardstick for a queue. As a <b>triage tool it delivers ${at.lift.toFixed(1)}× lift and ~${effort}% less review effort</b>, which is its actual job: put the right cases in front of staff first. It prioritizes human review; it is not an automated decision-maker.</div>
+    <p class="foot-meta">method: CalibratedClassifierCV(RandomForest, sigmoid) · every label & ranking score is out-of-fold (predicted by a model that never trained on it) · data: DTI-provided synthetic development set (300 labels), so the accuracy ceiling reflects synthetic label noise · single 75-case hold-out is underpowered (p≈0.31), so cross-validated figures are reported.</p>`;
+}
+
+/* cumulative-gains curve: prioritized queue vs. random order (inline SVG) */
+function gainsCurve(tr){
+  const W=340,H=200,pad=30, x0=pad,y0=H-pad,x1=W-6,y1=8;
+  const xs=tr.gains_x||[], ys=tr.gains_prioritized||[];
+  if(!xs.length) return "";
+  const px=f=>x0+(x1-x0)*f, py=f=>y0+(y1-y0)*f;
+  let d="M "+px(0)+" "+py(0);
+  for(let i=0;i<xs.length;i++) d+=" L "+px(xs[i]).toFixed(1)+" "+py(ys[i]).toFixed(1);
+  const gx=[0,.25,.5,.75,1], gy=[0,.25,.5,.75,1];
+  const grid=gx.map(g=>`<line x1="${px(g)}" y1="${y0}" x2="${px(g)}" y2="${y1}" stroke="#eceef1"/>`).join("")
+    + gy.map(g=>`<line x1="${x0}" y1="${py(g)}" x2="${x1}" y2="${py(g)}" stroke="#eceef1"/>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:360px">
+    ${grid}
+    <line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#9aa2ac" stroke-dasharray="4 3"/>
+    <path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    <line x1="${x0}" y1="${y1}" x2="${x0}" y2="${y0}" stroke="#cfd4d9"/>
+    <line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}" stroke="#cfd4d9"/>
+    <text x="${(x0+x1)/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#6b7480">share of caseload reviewed</text>
+    <text x="10" y="${(y0+y1)/2}" font-size="10" fill="#6b7480" transform="rotate(-90 10 ${(y0+y1)/2})" text-anchor="middle">true cases found</text>
+    <text x="${x1-4}" y="${y1+42}" text-anchor="end" font-size="10" fill="var(--accent)" font-weight="600">prioritized</text>
+    <text x="${x1-4}" y="${py(.62)}" text-anchor="end" font-size="10" fill="#9aa2ac">random</text>
+  </svg>`;
+}
+
+/* ---------------- shell wiring ---------------- */
+const CRUMBS={work:"Case management / <b>Worklist</b>",
+  case:()=>`Case management / Case detail / <b class="mono">${state.cid}</b>`,
+  evo:()=>`Case management / Evidence comparison / <b class="mono">${state.cid}</b>`,
+  honest:"Analytics / <b>Model performance</b>"};
+function renderPicks(){
+  document.getElementById("picks").innerHTML=DATA.curated.map(c=>{
+    return `<button class="pin ${c.cid===state.cid?'on':''}" data-pick="${c.cid}">
+      <span><span class="pl">${esc(c.scenario)}</span><br><span class="pid">${c.cid}</span></span>
+      ${c.cid===DATA.flip?`<span class="pin-note">changed</span>`:""}</button>`;
+  }).join("");
+  document.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>openCase(b.dataset.pick,true));
+}
+function render(){
+  document.getElementById("wl-count").textContent=DATA.worklist.length;
+  renderPicks();renderWork();renderCase();renderEvo();renderHonest();
+  ["work","case","evo","honest"].forEach(t=>document.getElementById("panel-"+t).classList.toggle("hidden",t!==state.tab));
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("on",b.dataset.t===state.tab));
+  document.querySelectorAll("#phase button").forEach(b=>b.classList.toggle("on",b.dataset.p===state.phase));
+  const cr=CRUMBS[state.tab];document.getElementById("crumb").innerHTML=typeof cr==="function"?cr():cr;
+  // worklist header sort handlers + row clicks (re-bound each render)
+  document.querySelectorAll("#panel-work th.sortable").forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;
+    state.sort=state.sort.key===k?{key:k,dir:state.sort.dir==="asc"?"desc":"asc"}:{key:k,dir:k==="cid"||k==="tag"?"asc":"desc"};
+    render();});
+  document.querySelectorAll("#panel-work tr[data-cid]").forEach(tr=>tr.onclick=()=>openCase(tr.dataset.cid));
+}
+function openCase(cid,stay){state.cid=cid;if(!stay)state.tab="case";render();}
+document.querySelectorAll(".nav-item").forEach(b=>b.onclick=()=>{state.tab=b.dataset.t;render();});
+document.getElementById("phase").addEventListener("click",e=>{const b=e.target.closest("button");if(b&&b.dataset.p){state.phase=b.dataset.p;render();}});
+document.getElementById("search").addEventListener("change",e=>{
+  const v=e.target.value.trim().toUpperCase();
+  if(DATA.cases[v]) openCase(v);
+  else if(v) alert("This offline build embeds only the curated + worklist cases. Use the full application to browse all 12,000 candidates.");
+});
+render();
+</script>
+</body>
+</html>

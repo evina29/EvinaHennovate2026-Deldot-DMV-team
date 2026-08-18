@@ -1,0 +1,16 @@
+# Enterprise light theme for the OSTR reviewer console (matches the deployed
+# HTML build in html_template.html). Restrained neutral palette; a single navy
+# accent; color is otherwise reserved for the three review classes.
+[theme]
+base = "light"
+primaryColor = "#1f4d6b"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f6f7f8"
+textColor = "#171b20"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false
